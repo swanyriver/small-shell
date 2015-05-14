@@ -17,7 +17,7 @@
 //is there a place to put this stream other than on the stack, read it pieces at a time?
 
 //GLOBAL VARIABLES
-const int INBUFFSIZE = 512;
+size_t INBUFFSIZE = 512;
 
 //TODO can have global char** to local input buffer
 //      unassigned here, assigned in main
@@ -25,33 +25,40 @@ const int INBUFFSIZE = 512;
 
 
 //function prototypes
-int showPrompt();
+int showPrompt(char** inputBuff);
 
 int main(void) {
 
 	char *inputBuffer = malloc(INBUFFSIZE * sizeof(char));
-
-	strncpy(inputBuffer,"hello",10);
-
-	//printf("addr:%d, *str:%d, &str:%d, first(%d):%c, str:%s",inputBuffer, *inputBuffer, &inputBuffer, *inputBuffer,*(inputBuffer+1), inputBuffer);
-
-	char** strpp = &inputBuffer;
-	printf("firstchar %p,   bufferaddr: %p", inputBuffer, strpp);
-
-	exit(1);
+	printf("heapstring:%p\n",inputBuffer);
 
 	while(strcmp(inputBuffer,"exit") != 0){
-		int rec = showPrompt();
-		//if(*inBuffPointer != inputBuffer) printf("%s", "input buffer has been malloced");
-		//printf("Received {%d} bytes => %s", rec, inputBuffer);
+	    //todo, should i realloc downward on buffer increase
+		int readCount = showPrompt(&inputBuffer);
+		printf("Received {%d} bytes => %s", readCount, inputBuffer);
 	}
 
 	return 0;
 }
 
-int showPrompt(){
+int showPrompt(char** inputBuff){
+
+    //TODO clear input buffer
+
 	printf("%s","\nsmallSH:");
 	fflush(stdout);
-	//return getline(inBuffPointer,INBUFFSIZE,stdin);
-	return 0;
+	int readCount = (int) getline(inputBuff,&INBUFFSIZE,stdin);
+
+	printf("heapstringPointer:%p\n",inputBuff);
+    printf("heapstring:%p\n",*inputBuff);
+    printf("heapstringchar:%c\n",**inputBuff);
+    printf("heapstringchar:%c\n",*inputBuff[0]);
+
+    (*inputBuff)[readCount-1]='\0';
+
+
+
+	return --readCount;
+
+	//TODO check for 0 or -1
 }
