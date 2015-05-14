@@ -34,7 +34,7 @@ int main(void) {
 }
 
 int showPrompt(){
-	puts("smallSH:");
+	printf("%s","\nsmallSH:");
 	fflush(stdout);
 	return getline(inBuffPointer,INBUFFSIZE,stdin);
 }
