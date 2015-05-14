@@ -16,12 +16,13 @@ typedef struct {
     char** args;
     int maxArgs;
     bool redirIn, redirOut;
-    char* inFILE, outFILE;
+    char *inFILE, *outFILE;
     bool bkgrnd;
 } cmd;
 
 cmd cmd_new(int _maxAgs);
-void parseCommand(char* input,cmd* command);
+bool parseCommand(char* input,cmd* command);
+int strEQ(char* a, char*b);
 
 
 #endif /* PARSECMD_H_ */

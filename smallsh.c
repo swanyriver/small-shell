@@ -22,10 +22,6 @@ size_t INBUFFSIZE = 512;
 //      unassigned here, assigned in main
 
 
-//small macro-like functions
-int strEQ(char* a, char*b){return strcmp(a,b) == 0;}
-
-
 //function prototypes
 int showPrompt(char** inputBuff);
 
@@ -39,7 +35,10 @@ int main(void) {
 		int readCount = showPrompt(&inputBuffer);
 
 		//printf("Received {%d/%d} bytes => %s", readCount, INBUFFSIZE, inputBuffer);
-		parseCommand(inputBuffer,&inputCommand);
+		bool success = parseCommand(inputBuffer,&inputCommand);
+
+		int i=0;
+		while(inputCommand.args[i]) printf("%s/",inputCommand.args[i++]);
 
 	}
 
