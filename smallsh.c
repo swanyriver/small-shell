@@ -37,9 +37,6 @@ int main(void) {
 		//printf("Received {%d/%d} bytes => %s", readCount, INBUFFSIZE, inputBuffer);
 		bool success = parseCommand(inputBuffer,&inputCommand);
 
-		int i=0;
-		while(inputCommand.args[i]) printf("%s/",inputCommand.args[i++]);
-
 	}
 
 	return 0;

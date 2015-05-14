@@ -39,6 +39,11 @@ bool _isSyntax(char* arg){
 //prints own error message, todo maybe pass msg back to controller
 bool parseCommand(char* input,cmd* command){
 
+    if(input[0] == '#' || input[0] == '\0'){
+        puts("comment line");
+        return false;
+    }
+
     _resetCMD(command);
 
     command->cmd=input;
