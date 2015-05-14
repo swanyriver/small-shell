@@ -11,10 +11,9 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <stdbool.h>
+#include "parsecmd.h"
 
-//GLOBAL CONSTANTS
-//#define INBUFFSIZE 512 // chat is requesting much longer that this TODO verify,
-//is there a place to put this stream other than on the stack, read it pieces at a time?
 
 //GLOBAL VARIABLES
 size_t INBUFFSIZE = 512;
@@ -33,13 +32,14 @@ int showPrompt(char** inputBuff);
 int main(void) {
 
 	char *inputBuffer = malloc(INBUFFSIZE * sizeof(char));
+	cmd inputCommand = cmd_new(512);  //todo define a constant
 
 	while(!strEQ(inputBuffer,"exit")){
 	    //todo, should i realloc downward on buffer increase
 		int readCount = showPrompt(&inputBuffer);
 
-		printf("Received {%d} bytes => %s", readCount, inputBuffer);
-
+		//printf("Received {%d/%d} bytes => %s", readCount, INBUFFSIZE, inputBuffer);
+		parseCommand(inputBuffer,&inputCommand);
 
 	}
 
