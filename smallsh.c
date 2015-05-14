@@ -23,6 +23,9 @@ size_t INBUFFSIZE = 512;
 //      unassigned here, assigned in main
 
 
+//small macro-like functions
+int strEQ(char* a, char*b){return strcmp(a,b) == 0;}
+
 
 //function prototypes
 int showPrompt(char** inputBuff);
@@ -30,12 +33,14 @@ int showPrompt(char** inputBuff);
 int main(void) {
 
 	char *inputBuffer = malloc(INBUFFSIZE * sizeof(char));
-	printf("heapstring:%p\n",inputBuffer);
 
-	while(strcmp(inputBuffer,"exit") != 0){
+	while(!strEQ(inputBuffer,"exit")){
 	    //todo, should i realloc downward on buffer increase
 		int readCount = showPrompt(&inputBuffer);
+
 		printf("Received {%d} bytes => %s", readCount, inputBuffer);
+
+
 	}
 
 	return 0;
@@ -48,17 +53,10 @@ int showPrompt(char** inputBuff){
 	printf("%s","\nsmallSH:");
 	fflush(stdout);
 	int readCount = (int) getline(inputBuff,&INBUFFSIZE,stdin);
-
-	printf("heapstringPointer:%p\n",inputBuff);
-    printf("heapstring:%p\n",*inputBuff);
-    printf("heapstringchar:%c\n",**inputBuff);
-    printf("heapstringchar:%c\n",*inputBuff[0]);
-
-    (*inputBuff)[readCount-1]='\0';
-
-
-
-	return --readCount;
+	--readCount;
+	while((*inputBuff)[readCount-1]==' ') --readCount;
+    (*inputBuff)[readCount]='\0';
+	return readCount;
 
 	//TODO check for 0 or -1
 }
