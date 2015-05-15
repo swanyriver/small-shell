@@ -9,10 +9,16 @@
 
 #include <stdio.h>
 
-int strEQ(char* a, char*b){return strcmp(a,b) == 0;}
+//int strEQ(char* a, char*b){return strcmp(a,b) == 0;} todo remove if not used
 int strEQci(char* a, char*b){
     while(*a && *b){
-        if ((*a++)&64 != (*b++)&64) return false;
+        if ( ((*a++)|32) != ((*b++)|32)){
+            --a;--b;
+            char x = (*a)|32; char y = (*b)|32;
+            printf("%d,%d,%d\n",(*a)|32, (*b)|32, x == y);
+            return false;
+        }
+        //printf("%c,%c\n", (*a++)|32, (*b++)|32);
     }
     if (*a != *b) return false;
     return true;
