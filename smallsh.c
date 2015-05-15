@@ -30,6 +30,7 @@ int isBuiltIn(char* cmd){
     if (strEQci(cmd,"exit")) return EXIT;
     if (strEQci(cmd,"status")) return STATUS;
     if (strEQci(cmd,"cd")) return CD;
+    return 0;
 }
 
 //TODO can have global char** to local input buffer
@@ -62,8 +63,6 @@ int main(void) {
 }
 
 int showPrompt(char** inputBuff){
-
-    //TODO clear input buffer
 
 	printf("%s","\nsmallSH:");
 	fflush(stdout);
