@@ -18,6 +18,7 @@ typedef struct {
     bool redirIn, redirOut;
     char *inFILE, *outFILE;
     bool bkgrnd;
+    short builtin;
 } cmd;
 
 cmd cmd_new(int _maxAgs);

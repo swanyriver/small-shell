@@ -33,6 +33,7 @@ void _resetCMD(cmd* command){
     command->redirIn=false;
     command->redirOut=false;
     command->bkgrnd=false;
+    command->builtin=0;  //todo shouldnt this refrence the global
 }
 
 bool _isSyntax(char* arg){
