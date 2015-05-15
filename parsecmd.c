@@ -10,6 +10,14 @@
 #include <stdio.h>
 
 int strEQ(char* a, char*b){return strcmp(a,b) == 0;}
+int strEQci(char* a, char*b){
+    while(*a && *b){
+        if ((*a++)&64 != (*b++)&64) return false;
+    }
+    if (*a != *b) return false;
+    return true;
+}
+
 
 cmd cmd_new(int _maxAgs){
     cmd my_cmd;
@@ -40,7 +48,6 @@ bool _isSyntax(char* arg){
 bool parseCommand(char* input,cmd* command){
 
     if(input[0] == '#' || input[0] == '\0'){
-        puts("comment line");
         return false;
     }
 
