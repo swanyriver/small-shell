@@ -20,7 +20,7 @@ int _isBuiltIn(char* cmd){
 bool preprared_to_exec(cmd *command){
 
 	command->builtin = _isBuiltIn(command->cmd);
-	if(command->builtin != NOT_BUILTIN) return true;
+	if(command->builtin) return true;
 
 	if(command->redirIn){
 		//open file, return false if unable

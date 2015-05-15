@@ -50,12 +50,18 @@ int main(void) {
 		    		if(inputCommand.builtin==EXIT){
 		    			exit=true;
 		    		}
+		    	} else {
+		    		//do appropriate redirection
+		    		//forking and exec
+
 		    	}
+		    //end of Prepared to execute
 		    }
-		}
+		// end of parse command
+		} //ELSE, bad command, re-prompt
 
-
-	}
+	//end of input loop
+	} //exit command issued to exit
 
 	return 0;
 }

@@ -11,6 +11,8 @@
 #include <stdbool.h>
 #include <stdlib.h>
 
+typedef enum { NOT_BUILT_IN, EXIT, CD, STATUS } built_in_type;
+
 typedef struct {
     char* cmd;
     char** args;
@@ -18,7 +20,7 @@ typedef struct {
     bool redirIn, redirOut;
     char *inFILE, *outFILE;
     bool bkgrnd;
-    short builtin;
+    built_in_type builtin;
 } cmd;
 
 cmd cmd_new(int _maxAgs);
