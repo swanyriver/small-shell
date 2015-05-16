@@ -25,8 +25,8 @@ typedef struct {
 
 cmd cmd_new(int _maxAgs);
 bool parseCommand(char* input,cmd* command);
-int strEQ(char* a, char*b);
-int strEQci(char* a, char*b);
+//int strEQ(char* a, char*b); //TODO remove if not used
+bool strEQci(char* a, char*b);
 
 
 #endif /* PARSECMD_H_ */

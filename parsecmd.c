@@ -10,7 +10,7 @@
 #include <stdio.h>
 
 //int strEQ(char* a, char*b){return strcmp(a,b) == 0;} todo remove if not used
-int strEQci(char* a, char*b){
+bool strEQci(char* a, char*b){
     while(*a && *b){
         if ( ((*a++)|32) != ((*b++)|32))  return false;
     }
@@ -101,6 +101,7 @@ bool parseCommand(char* input,cmd* command){
 
         if(command->bkgrnd && bkgroundINDX < numWords-1){
             printf("%s","SYNTAX ERROR: no commands belong after & symbol");
+            return false;
         }
 
         /*if (numWords-endOfArgs >

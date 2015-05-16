@@ -7,7 +7,6 @@
 
 #include <stdbool.h>
 #include "prepare.h"
-#include "parsecmd.h"
 
 int _isBuiltIn(char* cmd){
 
@@ -20,7 +19,7 @@ int _isBuiltIn(char* cmd){
 bool preprared_to_exec(cmd *command){
 
 	command->builtin = _isBuiltIn(command->cmd);
-	if(command->builtin) return true;
+	if(command->builtin) return false;
 
 	if(command->redirIn){
 		//open file, return false if unable
@@ -29,6 +28,12 @@ bool preprared_to_exec(cmd *command){
 	if(command->redirOut){
 		//open file, return false if unable
 	}
+
+	return true;
+}
+
+bool redirects_ready(cmd *command){
+	if(!(command->redirIn || command->redirOut)) return true;
 
 	return true;
 }

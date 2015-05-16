@@ -35,7 +35,28 @@ int main(void) {
 	bool exit = false;
 
 
+	do{
+		int readCount = showPrompt(&inputBuffer);
 
+		if(parseCommand(inputBuffer,&inputCommand)
+				&& preprared_to_exec(&inputCommand)
+				&& redirects_ready(&inputCommand)
+		){
+			//EXECUTE COMMAND
+
+			printf("command ready:%s",inputCommand.cmd);
+
+		} else if (inputCommand.builtin == STATUS) {
+			printf("status:%d",inputCommand.builtin);
+		} else if (inputCommand.builtin == CD) {
+			printf("cd:%d",inputCommand.builtin);
+		}
+
+
+	} while (inputCommand.builtin!=EXIT);
+
+
+/*
 	while(!exit){
 	    //todo, should i realloc downward on buffer increase
 		int readCount = showPrompt(&inputBuffer);
@@ -62,6 +83,7 @@ int main(void) {
 
 	//end of input loop
 	} //exit command issued to exit
+*/
 
 	return 0;
 }
