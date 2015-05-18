@@ -1,0 +1,4 @@
+prepare.c: In function ‘preprare_redirects’:
+prepare.c:39:32: warning: cast to pointer from integer of different size [-Wint-to-pointer-cast]
+          _safe_exit(FDin,FDout,(char*) strerror(errno));
+                                ^

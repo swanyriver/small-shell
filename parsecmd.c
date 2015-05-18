@@ -87,11 +87,11 @@ bool parseCommand(char* input,cmd* command){
 
             if( command->args[numWords][0] == '>' ) {
                 outFileINDX = numWords;
-                command->redirIn = true;
+                command->redirOut = true;
             }
             if( command->args[numWords][0] == '<' ){
                 inFileINDX = numWords;
-                command->redirOut = true;
+                command->redirIn = true;
             }
             if( command->args[numWords][0] == '&' ) {
                 bkgroundINDX = numWords;
