@@ -3,16 +3,12 @@
 #first by building objects when they need updating
 #then by linking them togethr
 
-##----------------------------------------------------------------------
-## 20. Demonstrates at least one makefile
-##----------------------------------------------------------------------
-
 CC=gcc
-#CFLAGS=-c
+CFLAGS=-c
 #LDFLAGS=-lncurses
 OS=2>errors.txt
 SOURCES=smallsh.c parsecmd.c prepare.c
-OBJECTS=$(SOURCES:.cpp=.o)
+OBJECTS=$(SOURCES:.c=.o)
 EXECUTABLE=small
 
 all: $(SOURCES) $(EXECUTABLE)
@@ -20,6 +16,6 @@ all: $(SOURCES) $(EXECUTABLE)
 $(EXECUTABLE): $(OBJECTS)
 	$(CC)  $(OBJECTS) -o $@ $(LDFLAGS) $(OS)
 
-.cpp.o:
+.c.o:
 	$(CC) $(CFLAGS) $< -o $@
 

@@ -1,1 +1,0 @@
-gcc -g -o small smallsh.c parsecmd.c 2>errors.txt && ./small

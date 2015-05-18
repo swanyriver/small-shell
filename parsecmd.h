@@ -13,6 +13,8 @@
 
 typedef enum { NOT_BUILT_IN, EXIT, CD, STATUS } built_in_type;
 
+
+//TODO move to its own header
 typedef struct {
     char* cmd;
     char** args;
