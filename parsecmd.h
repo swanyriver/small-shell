@@ -10,20 +10,8 @@
 
 #include <stdbool.h>
 #include <stdlib.h>
+#include "command.h"
 
-typedef enum { NOT_BUILT_IN, EXIT, CD, STATUS } built_in_type;
-
-
-//TODO move to its own header
-typedef struct {
-    char* cmd;
-    char** args;
-    int maxArgs;
-    bool redirIn, redirOut;
-    char *inFILE, *outFILE;
-    bool bkgrnd;
-    built_in_type builtin;
-} cmd;
 
 cmd cmd_new(int _maxAgs);
 bool parseCommand(char* input,cmd* command);

@@ -9,7 +9,7 @@
 #define PREPARE_H_
 
 #include <stdbool.h>
-#include "parsecmd.h"
+#include "command.h"
 
 
 bool preprared_to_exec(cmd *command);

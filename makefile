@@ -6,7 +6,6 @@
 CC=gcc
 CFLAGS=-c
 #LDFLAGS=-lncurses
-OS=2>errors.txt
 SOURCES=smallsh.c parsecmd.c prepare.c
 OBJECTS=$(SOURCES:.c=.o)
 EXECUTABLE=small
@@ -14,8 +13,10 @@ EXECUTABLE=small
 all: $(SOURCES) $(EXECUTABLE)
 	
 $(EXECUTABLE): $(OBJECTS)
-	$(CC)  $(OBJECTS) -o $@ $(LDFLAGS) $(OS)
+	$(CC)  $(OBJECTS) -o $@ $(LDFLAGS)
 
 .c.o:
 	$(CC) $(CFLAGS) $< -o $@
 
+clean:
+	rm $(OBJECTS) $(EXECUTABLE)

@@ -14,11 +14,12 @@
 #include <stdbool.h>
 #include "parsecmd.h"
 #include "prepare.h"
+#include "command.h"
 
 
 //GLOBAL VARIABLES
 size_t INBUFFSIZE = 512;
-
+const int ORIGINAL_MAX_ARGUMENTS = 512;
 
 
 //TODO can have global char** to local input buffer
@@ -31,7 +32,7 @@ int showPrompt(char** inputBuff);
 int main(void) {
 
 	char *inputBuffer = malloc(INBUFFSIZE * sizeof(char));
-	cmd inputCommand = cmd_new(512);  //todo define a constant
+	cmd inputCommand = cmd_new(ORIGINAL_MAX_ARGUMENTS);
 	bool exit = false;
 
 

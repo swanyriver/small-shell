@@ -6,7 +6,6 @@
  */
 #include "parsecmd.h"
 #include <string.h>
-
 #include <stdio.h>
 
 //int strEQ(char* a, char*b){return strcmp(a,b) == 0;} todo remove if not used
@@ -33,7 +32,7 @@ void _resetCMD(cmd* command){
     command->redirIn=false;
     command->redirOut=false;
     command->bkgrnd=false;
-    command->builtin=0;  //todo shouldnt this refrence the global
+    command->builtin=NOT_BUILT_IN;
 }
 
 bool _isSyntax(char* arg){
