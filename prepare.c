@@ -8,18 +8,9 @@
 #include <stdbool.h>
 #include "prepare.h"
 
-int _isBuiltIn(char* cmd){
 
-    if (strEQci(cmd,"exit")) return EXIT;
-    if (strEQci(cmd,"status")) return STATUS;
-    if (strEQci(cmd,"cd")) return CD;
-    return 0;
-}
 
-bool preprared_to_exec(cmd *command){
-
-	command->builtin = _isBuiltIn(command->cmd);
-	if(command->builtin) return false;
+bool preprare_redirects(cmd *command){
 
 	if(command->redirIn){
 		//open file, return false if unable
@@ -33,10 +24,5 @@ bool preprared_to_exec(cmd *command){
 	return true;
 }
 
-bool redirects_ready(cmd *command){
-	if(!(command->redirIn || command->redirOut)) return true;
-
-	return true;
-}
 
 

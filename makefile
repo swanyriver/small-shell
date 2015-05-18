@@ -13,10 +13,10 @@ EXECUTABLE=small
 all: $(SOURCES) $(EXECUTABLE)
 	
 $(EXECUTABLE): $(OBJECTS)
-	$(CC)  $(OBJECTS) -o $@ $(LDFLAGS)
+	$(CC) -g $(OBJECTS) -o $@ $(LDFLAGS)
 
 .c.o:
-	$(CC) $(CFLAGS) $< -o $@
+	$(CC) -g $(CFLAGS) $< -o $@
 
 clean:
 	rm $(OBJECTS) $(EXECUTABLE)

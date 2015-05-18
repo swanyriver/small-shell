@@ -17,6 +17,14 @@ bool strEQci(char* a, char*b){
     return true;
 }
 
+int _isBuiltIn(char* cmd){
+
+    if (strEQci(cmd,"exit")) return EXIT;
+    if (strEQci(cmd,"status")) return STATUS;
+    if (strEQci(cmd,"cd")) return CD;
+    return 0;
+}
+
 
 cmd cmd_new(int _maxAgs){
     cmd my_cmd;
@@ -93,6 +101,8 @@ bool parseCommand(char* input,cmd* command){
 
     } while ( command->args[numWords] );
 
+    command->builtin = _isBuiltIn(command->cmd);
+    if(command->builtin) return false;
 
     if(endOfArgs){
 

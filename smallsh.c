@@ -12,6 +12,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <stdbool.h>
+#include <errno.h>
 #include "parsecmd.h"
 #include "prepare.h"
 #include "command.h"
@@ -28,6 +29,8 @@ const int ORIGINAL_MAX_ARGUMENTS = 512;
 
 //function prototypes
 bool showPrompt(char** inputBuff);
+void changedir(char* path);
+void status();
 
 int main(void) {
 
@@ -37,52 +40,22 @@ int main(void) {
 	do{
 		if(showPrompt(&inputBuffer)
 		        && parseCommand(inputBuffer,&inputCommand)
-				&& preprared_to_exec(&inputCommand)
-				&& redirects_ready(&inputCommand)
 		){
 			//EXECUTE COMMAND
 
 			printf("command ready:%s",inputCommand.cmd);
 
 		} else if (inputCommand.builtin == STATUS) {
-			printf("status:%d",inputCommand.builtin);
+			printf("status:%d",inputCommand.builtin);  //todo call status
 		} else if (inputCommand.builtin == CD) {
-			printf("cd:%d",inputCommand.builtin);
+		    changedir(inputCommand.args[1]);
 		}
 
 
 	} while (inputCommand.builtin!=EXIT);
 
-
-/*
-	while(!exit){
-	    //todo, should i realloc downward on buffer increase
-		int readCount = showPrompt(&inputBuffer);
-
-		//returns true on properly formated and not commented, otherwise not executed
-		if(parseCommand(inputBuffer,&inputCommand)){
-			//command is valid syntac
-		    if(preprared_to_exec(&inputCommand)){
-		    	//checked for built in, and read/writable files
-		    	if(inputCommand.builtin){
-		    		printf("built in #%d:%s,", inputCommand.builtin, inputCommand.cmd);
-		    		if(inputCommand.builtin==EXIT){
-		    			exit=true;
-		    		}
-		    	} else {
-		    		//do appropriate redirection
-		    		//forking and exec
-
-		    	}
-		    //end of Prepared to execute
-		    }
-		// end of parse command
-		} //ELSE, bad command, re-prompt
-
-	//end of input loop
-	} //exit command issued to exit
-*/
-
+	free(inputCommand.args);
+	free(inputBuffer);
 	return 0;
 }
 
@@ -108,4 +81,21 @@ bool showPrompt(char** inputBuff){
     }
 
     return true;
+}
+
+void changedir(char* path){
+    if(!path){
+        fprintf(stderr,"%s","ERROR: must provide directory name/path"); //TODO change all errors to stderr
+        return;
+    }
+
+    if(chdir(path) != 0){
+        const char* error = strerror(errno);
+        fprintf(stderr, "ERROR:%s",error);
+    } else {
+        char* cwd = get_current_dir_name();
+        printf("CWD changed to:%s",cwd);
+        free(cwd);
+    }
+
 }
