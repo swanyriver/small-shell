@@ -47,7 +47,7 @@ bool _isSyntax(char* arg){
 //prints own error message, todo maybe pass msg back to controller
 bool parseCommand(char* input,cmd* command){
 
-    if(input[0] == '#' || input[0] == '\0'){
+    if(input[0] == '#' || input[0] == '\0' || input[0] == '\n'){
         return false;
     }
 
@@ -65,8 +65,6 @@ bool parseCommand(char* input,cmd* command){
     strtok( input , " " );
     do {
         command->args[++numWords] = strtok( NULL , " " );
-
-        //printf("next=>%s\n",command->args[numWords]); //todo remove debug print
 
         if(numWords>=command->maxArgs){
             command->maxArgs *=2;
@@ -108,11 +106,10 @@ bool parseCommand(char* input,cmd* command){
             //i suspect there are too many
         }*/
 
-        //todo check for out of order input output redirect
         //todo check for not enough or too many argumetns after > <
 
         if(command->redirIn) command->inFILE = command->args[inFileINDX+1];
-        if(command->redirOut) command->outFILE = command->args[inFileINDX+1];
+        if(command->redirOut) command->outFILE = command->args[outFileINDX+1];
 
         command->args[endOfArgs]=NULL;
     }

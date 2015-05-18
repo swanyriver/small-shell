@@ -27,19 +27,16 @@ const int ORIGINAL_MAX_ARGUMENTS = 512;
 
 
 //function prototypes
-int showPrompt(char** inputBuff);
+bool showPrompt(char** inputBuff);
 
 int main(void) {
 
 	char *inputBuffer = malloc(INBUFFSIZE * sizeof(char));
 	cmd inputCommand = cmd_new(ORIGINAL_MAX_ARGUMENTS);
-	bool exit = false;
-
 
 	do{
-		int readCount = showPrompt(&inputBuffer);
-
-		if(parseCommand(inputBuffer,&inputCommand)
+		if(showPrompt(&inputBuffer)
+		        && parseCommand(inputBuffer,&inputCommand)
 				&& preprared_to_exec(&inputCommand)
 				&& redirects_ready(&inputCommand)
 		){
@@ -89,15 +86,26 @@ int main(void) {
 	return 0;
 }
 
-int showPrompt(char** inputBuff){
+bool showPrompt(char** inputBuff){
 
 	printf("%s","\nsmallSH:");
 	fflush(stdout);
-	int readCount = (int) getline(inputBuff,&INBUFFSIZE,stdin);
+	size_t readCount = getline(inputBuff,&INBUFFSIZE,stdin);
 	--readCount;
 	while((*inputBuff)[readCount-1]==' ') --readCount;
     (*inputBuff)[readCount]='\0';
-	return readCount;
 
-	//TODO check for 0 or -1
+
+    //user hit enter with no input
+    if(readCount == 0){
+        return false;
+    }
+
+    if(readCount == -1){
+        printf("%s",
+              "ERROR: there was an error reading your input, please try again");
+        return false;
+    }
+
+    return true;
 }

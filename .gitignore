@@ -7,3 +7,4 @@ small
 run
 
 *.o
+/Debug/

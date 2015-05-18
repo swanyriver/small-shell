@@ -23,6 +23,7 @@ bool preprared_to_exec(cmd *command){
 
 	if(command->redirIn){
 		//open file, return false if unable
+	    //set close on exec
 	}
 
 	if(command->redirOut){
