@@ -12,7 +12,7 @@
 #include "command.h"
 
 
-bool preprare_redirects(cmd *command);
+void preprare_redirects(cmd *command);
 
 
 #endif /* PREPARE_H_ */

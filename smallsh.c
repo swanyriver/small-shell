@@ -21,6 +21,7 @@
 //GLOBAL VARIABLES
 size_t INBUFFSIZE = 512;
 const int ORIGINAL_MAX_ARGUMENTS = 512;
+const int NONSENSE = -5;
 
 
 //TODO can have global char** to local input buffer
@@ -31,6 +32,7 @@ const int ORIGINAL_MAX_ARGUMENTS = 512;
 bool showPrompt(char** inputBuff);
 void changedir(char* path);
 void status();
+void runcommand(cmd *command);
 
 int main(void) {
 
@@ -41,10 +43,7 @@ int main(void) {
 		if(showPrompt(&inputBuffer)
 		        && parseCommand(inputBuffer,&inputCommand)
 		){
-			//EXECUTE COMMAND
-
-			printf("command ready:%s",inputCommand.cmd);
-
+		    runcommand(&inputCommand);
 		} else if (inputCommand.builtin == STATUS) {
 			printf("status:%d",inputCommand.builtin);  //todo call status
 		} else if (inputCommand.builtin == CD) {
@@ -57,6 +56,43 @@ int main(void) {
 	free(inputCommand.args);
 	free(inputBuffer);
 	return 0;
+}
+
+void runcommand(cmd *command){
+
+    int spawnpid = NONSENSE;
+
+    spawnpid = fork();
+
+    if(spawnpid == NONSENSE){
+        fprintf(stderr,"%s","FORK ERROR: fork returned nonsense value");
+        exit(1);
+    }
+    if(spawnpid == -1){
+        fprintf(stderr,"%s","FORK ERROR: forking process failed");
+        exit(1);
+    }
+
+    if (spawnpid == 0){
+        //child process
+
+        //redirect in and out
+        preprare_redirects(command);
+
+        execvp(command->cmd,command->args);
+
+    } else {
+        int status;
+        waitpid(spawnpid,&status,0);
+
+        if(WIFEXITED(status)){
+            //puts(" sucsessfully");
+        } else {
+            //puts (" unsucsessful");
+        }
+    }
+
+
 }
 
 bool showPrompt(char** inputBuff){
@@ -93,7 +129,7 @@ void changedir(char* path){
         const char* error = strerror(errno);
         fprintf(stderr, "ERROR:%s",error);
     } else {
-        char* cwd = get_current_dir_name();
+        char* cwd = get_current_dir_name();  //todo change to pre-alloced getcwd()
         printf("CWD changed to:%s",cwd);
         free(cwd);
     }

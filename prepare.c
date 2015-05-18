@@ -9,8 +9,9 @@
 #include "prepare.h"
 
 
-
-bool preprare_redirects(cmd *command){
+//open files and attach pipes
+//exit with error message on any failure
+void preprare_redirects(cmd *command){
 
 	if(command->redirIn){
 		//open file, return false if unable
@@ -21,7 +22,6 @@ bool preprare_redirects(cmd *command){
 		//open file, return false if unable
 	}
 
-	return true;
 }
 
 
