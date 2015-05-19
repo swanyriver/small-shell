@@ -46,7 +46,7 @@ echo
 echo
 echo --------------------
 echo sleep 100 background (10 points for returning process ID of sleeper)
-sleep 100 &
+sleep 25 &
 echo
 echo
 echo --------------------

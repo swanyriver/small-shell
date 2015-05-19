@@ -154,16 +154,18 @@ void check_completedBG(){
         pid = waitpid(-1,&status,WNOHANG);
 
         if (pid > 0) {
-            if(WIFEXITED(status)){
-                printf("background process %d terminated with status:%d",
-                        pid, WEXITSTATUS(status));
-            } else if (WIFSIGNALED(status)){
+            if (WIFSIGNALED(status)){
                 printf("background process %d terminated with status:%d",
                         pid, strsignal( WTERMSIG(status) ) );
+            } else if(WIFEXITED(status)){
+                printf("background process %d terminated with status:%d",
+                        pid, WEXITSTATUS(status));
             }
         }
+        //todo fix reporting of exit normal on kill
+        //background process 14152 terminated with status:1941129366
 
-    }while(status);
+    }while(pid>0);
 }
 
 
@@ -186,6 +188,13 @@ bool showPrompt(char** inputBuff){
         fprintf(stderr,"%s",
               "ERROR: there was an error reading your input, please try again");
         return false;
+    }
+
+    //return to interactive mode when reached end of another file
+    if (feof(stdin)) {
+      if (!freopen("/dev/tty", "r", stdin)) {
+        error_exit("STREAM ERROR:");
+      }
     }
 
     return true;
