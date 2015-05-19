@@ -77,7 +77,7 @@ void runcommand(cmd *command){
         //child process
 
         //redirect in and out
-        preprare_redirects(command);
+        prepare_redirects(command);
 
         execvp(command->cmd,command->args);
 
