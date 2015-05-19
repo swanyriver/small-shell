@@ -193,8 +193,7 @@ bool showPrompt(char** inputBuff){
 
 void changedir(char* path, char* cwd){
     if(!path){
-        fprintf(stderr,"%s","ERROR: must provide directory name/path");
-        return;
+        path = getenv("HOME");
     }
 
     if(chdir(path) != 0){
