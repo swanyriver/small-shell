@@ -7,4 +7,5 @@ small
 run
 
 *.o
-/Debug/
+
+smallsh

@@ -154,11 +154,12 @@ void check_completedBG(){
         pid = waitpid(-1,&status,WNOHANG);
 
         if (pid > 0) {
+            printf("status unconverted %d\n",status);
             if (WIFSIGNALED(status)){
-                printf("background process %d terminated with status:%d",
+                printf("background process %d terminated with signal:%d",
                         pid, strsignal( WTERMSIG(status) ) );
             } else if(WIFEXITED(status)){
-                printf("background process %d terminated with status:%d",
+                printf("background process %d exited with status:%d",
                         pid, WEXITSTATUS(status));
             }
         }
