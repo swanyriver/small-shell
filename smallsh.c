@@ -27,6 +27,7 @@ typedef struct {
 bool showPrompt(char** inputBuff);
 void changedir(char* path);
 void runcommand(cmd *command, process *proc);
+void deadChild(int signum);
 
 
 int main(void) {
@@ -35,6 +36,7 @@ int main(void) {
     struct sigaction interuptAction;
     interuptAction.sa_handler=SIG_IGN;
     sigaction(SIGINT,&interuptAction,NULL);
+    sigaction(SIGCHLD,&interuptAction,NULL);
 
 	char *inputBuffer = malloc(INBUFFSIZE * sizeof(char));
 	cmd inputCommand = cmd_new(ORIGINAL_MAX_ARGUMENTS);
@@ -106,9 +108,7 @@ void runcommand(cmd *command, process *proc){
         //parent process
         int status;
 
-        if(command->bkgrnd){
-            waitpid(spawnpid,&status,WNOHANG); //todo figure out how to clean zombies
-        }else {
+        if(!command->bkgrnd){
 
             strncpy(proc->Pname,command->cmd,NAME_SIZE);
             proc->pid=spawnpid;
