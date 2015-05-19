@@ -19,7 +19,9 @@ const int NAME_SIZE = 512;
 typedef struct {
     int pid;
     char* Pname;
+    bool exitnorm;
     int exit_status;
+    int signal;
 } process;
 
 
@@ -27,16 +29,15 @@ typedef struct {
 bool showPrompt(char** inputBuff);
 void changedir(char* path);
 void runcommand(cmd *command, process *proc);
-void deadChild(int signum);
-
+void check_completedBG();
 
 int main(void) {
 
     //set up signal handling
-    struct sigaction interuptAction;
-    interuptAction.sa_handler=SIG_IGN;
-    sigaction(SIGINT,&interuptAction,NULL);
-    sigaction(SIGCHLD,&interuptAction,NULL);
+    struct sigaction action;
+    action.sa_handler=SIG_IGN;
+    sigaction(SIGINT,&action,NULL);
+    //sigaction(SIGCHLD,&action,NULL);  //kill zombies by ignore sigchild
 
 	char *inputBuffer = malloc(INBUFFSIZE * sizeof(char));
 	cmd inputCommand = cmd_new(ORIGINAL_MAX_ARGUMENTS);
@@ -53,13 +54,19 @@ int main(void) {
 
 	//begin input output loop
 	do{
-		if(showPrompt(&inputBuffer)
+	    check_completedBG();
+	    if(showPrompt(&inputBuffer)
 		        && parseCommand(inputBuffer,&inputCommand)
 		){
 		    runcommand(&inputCommand, &lastP);
 		} else if (inputCommand.builtin == STATUS) {
-			printf("(%d) %s exited with status:%d\n",
-			        lastP.pid,lastP.Pname,lastP.exit_status);  //todo check for signal
+		    if(lastP.exitnorm){
+		        printf("(%d) %s exited with status:%d\n",
+		                lastP.pid,lastP.Pname,lastP.exit_status);
+		    } else {
+		        printf("(%d) %s exited due to signal:%s\n",
+		               lastP.pid,lastP.Pname,strsignal(lastP.signal));
+		    }
 		} else if (inputCommand.builtin == CD) {
 		    changedir(inputCommand.args[1]);
 		}
@@ -108,7 +115,10 @@ void runcommand(cmd *command, process *proc){
         //parent process
         int status;
 
-        if(!command->bkgrnd){
+        if(command->bkgrnd){
+            printf("%s started in background, PID:%d",command->cmd, spawnpid);
+
+        } else {
 
             strncpy(proc->Pname,command->cmd,NAME_SIZE);
             proc->pid=spawnpid;
@@ -116,15 +126,40 @@ void runcommand(cmd *command, process *proc){
             waitpid(spawnpid,&status,0);
 
             if(WIFEXITED(status)){
+                proc->exitnorm = true;
                 proc->exit_status = WEXITSTATUS(status);
             } else if (WIFSIGNALED(status)){
-                //todo check for signal
+                proc->exitnorm= false;
+                proc->signal = WTERMSIG(status);
+                printf("%s exited due to signal: %s\n",
+                        command->cmd, strsignal(proc->signal));
             }
         }
     }
 
 
 }
+
+void check_completedBG(){
+    int status = NULL;
+    int pid;
+
+    do{
+        pid = waitpid(-1,&status,WNOHANG);
+
+        if (pid > 0) {
+            if(WIFEXITED(status)){
+                printf("background process %d terminated with status:%d",
+                        pid, WEXITSTATUS(status));
+            } else if (WIFSIGNALED(status)){
+                printf("background process %d terminated with status:%d",
+                        pid, strsignal( WTERMSIG(status) ) );
+            }
+        }
+
+    }while(status);
+}
+
 
 bool showPrompt(char** inputBuff){
 

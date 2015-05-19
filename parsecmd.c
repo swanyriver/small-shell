@@ -8,7 +8,6 @@
 #include <string.h>
 #include <stdio.h>
 
-//int strEQ(char* a, char*b){return strcmp(a,b) == 0;} todo remove if not used
 bool strEQci(char* a, char*b){
     while(*a && *b){
         if ( ((*a++)|32) != ((*b++)|32))  return false;
@@ -51,8 +50,7 @@ bool _isSyntax(char* arg){
     return false;
 }
 
-//return true if syntax is valid
-//prints own error message, todo maybe pass msg back to controller
+//return true if syntax is valid,
 bool parseCommand(char* input,cmd* command){
 
     if(input[0] == '#' || input[0] == '\0' || input[0] == '\n'){
