@@ -8,6 +8,7 @@
 #include "parsecmd.h"
 #include "prepare.h"
 #include "command.h"
+#include "error.h"
 
 
 //GLOBAL VARIABLES
@@ -15,6 +16,7 @@ size_t INBUFFSIZE = 512;
 const int ORIGINAL_MAX_ARGUMENTS = 512;
 const int NONSENSE = -5;
 const int NAME_SIZE = 512;
+const int DIR_NAME_SIZE = 512;
 
 typedef struct {
     int pid;
@@ -27,7 +29,7 @@ typedef struct {
 
 //function prototypes
 bool showPrompt(char** inputBuff);
-void changedir(char* path);
+void changedir(char* path, char* cwd);
 void runcommand(cmd *command, process *proc);
 void check_completedBG();
 
@@ -37,9 +39,11 @@ int main(void) {
     struct sigaction action;
     action.sa_handler=SIG_IGN;
     sigaction(SIGINT,&action,NULL);
-    //sigaction(SIGCHLD,&action,NULL);  //kill zombies by ignore sigchild
 
+    char *dir_name = malloc(DIR_NAME_SIZE * sizeof(char));
+    if (!dir_name) error_exit("MEMORY ERROR");
 	char *inputBuffer = malloc(INBUFFSIZE * sizeof(char));
+	if (!inputBuffer) error_exit("MEMORY ERROR");
 	cmd inputCommand = cmd_new(ORIGINAL_MAX_ARGUMENTS);
 
 	//set up process exit status recording for status command
@@ -47,19 +51,21 @@ int main(void) {
 	        .Pname = malloc(sizeof(char)*NAME_SIZE),
 	        .exit_status =0};
 	if (!lastP.Pname){
-	    const char* error = strerror(errno);
-        fprintf(stderr, "MEMORY ERROR:%s",error);
-        exit(1);
-	} //todo do a null check on all mallocs
+	    error_exit("MEMORY ERROR");
+	}
+
+
 
 	//begin input output loop
 	do{
 	    check_completedBG();
 	    if(showPrompt(&inputBuffer)
-		        && parseCommand(inputBuffer,&inputCommand)
-		){
+		        && parseCommand(inputBuffer,&inputCommand))
+	    {
+
 		    runcommand(&inputCommand, &lastP);
-		} else if (inputCommand.builtin == STATUS) {
+
+	    } else if (inputCommand.builtin == STATUS) {
 		    if(lastP.exitnorm){
 		        printf("(%d) %s exited with status:%d\n",
 		                lastP.pid,lastP.Pname,lastP.exit_status);
@@ -68,7 +74,7 @@ int main(void) {
 		               lastP.pid,lastP.Pname,strsignal(lastP.signal));
 		    }
 		} else if (inputCommand.builtin == CD) {
-		    changedir(inputCommand.args[1]);
+		    changedir(inputCommand.args[1], dir_name);
 		}
 
 
@@ -185,7 +191,7 @@ bool showPrompt(char** inputBuff){
     return true;
 }
 
-void changedir(char* path){
+void changedir(char* path, char* cwd){
     if(!path){
         fprintf(stderr,"%s","ERROR: must provide directory name/path");
         return;
@@ -195,9 +201,8 @@ void changedir(char* path){
         const char* error = strerror(errno);
         fprintf(stderr, "ERROR:%s",error);
     } else {
-        char* cwd = (char*) get_current_dir_name();  //todo change to pre-alloced getcwd()
+        getcwd(cwd, DIR_NAME_SIZE);
         printf("CWD changed to:%s",cwd);
-        free(cwd);
     }
 
 }

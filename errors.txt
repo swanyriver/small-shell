@@ -1,4 +1,11 @@
-prepare.c: In function ‘preprare_redirects’:
-prepare.c:39:32: warning: cast to pointer from integer of different size [-Wint-to-pointer-cast]
-          _safe_exit(FDin,FDout,(char*) strerror(errno));
-                                ^
+parsecmd.o: In function `error_exit':
+/home/brandon/SpringOSU15/OS/small-shell/error.h:15: multiple definition of `error_exit'
+smallsh.o:/home/brandon/SpringOSU15/OS/small-shell/error.h:15: first defined here
+prepare.o: In function `error_exit':
+/home/brandon/SpringOSU15/OS/small-shell/error.h:15: multiple definition of `error_exit'
+smallsh.o:/home/brandon/SpringOSU15/OS/small-shell/error.h:15: first defined here
+error.o: In function `error_exit':
+/home/brandon/SpringOSU15/OS/small-shell/error.c:15: multiple definition of `error_exit'
+smallsh.o:/home/brandon/SpringOSU15/OS/small-shell/error.h:15: first defined here
+collect2: error: ld returned 1 exit status
+make: *** [small] Error 1

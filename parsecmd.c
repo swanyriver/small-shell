@@ -5,6 +5,7 @@
  *      Author: brandon
  */
 #include "parsecmd.h"
+#include "error.h"
 #include <string.h>
 #include <stdio.h>
 
@@ -30,7 +31,7 @@ cmd cmd_new(int _maxAgs){
 
     my_cmd.maxArgs = _maxAgs;
     my_cmd.args=malloc(_maxAgs * sizeof(char*));
-    //todo raise if args==0 malloc failed
+    if(!my_cmd.args) error_exit("MEMORY ERROR");
 
     return my_cmd;
 }
@@ -76,7 +77,9 @@ bool parseCommand(char* input,cmd* command){
             command->maxArgs *=2;
             char** tmp = realloc(command->args,command->maxArgs * sizeof(char*));
             if(tmp) command->args = tmp;
-            else exit(1);  //todo raise()
+            else {
+                error_exit("MEMMORY ERROR:");
+            }
         }
 
 

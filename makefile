@@ -6,7 +6,7 @@
 CC=gcc
 CFLAGS=-c
 #LDFLAGS=-lncurses
-SOURCES=smallsh.c parsecmd.c prepare.c
+SOURCES=smallsh.c parsecmd.c prepare.c error.c
 OBJECTS=$(SOURCES:.c=.o)
 EXECUTABLE=small
 
