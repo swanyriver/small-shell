@@ -147,16 +147,15 @@ void runcommand(cmd *command, process *proc){
 }
 
 void check_completedBG(){
-    int status = NULL;
+    int status;
     int pid;
 
     do{
         pid = waitpid(-1,&status,WNOHANG);
 
         if (pid > 0) {
-            printf("status unconverted %d\n",status);
             if (WIFSIGNALED(status)){
-                printf("background process %d terminated with signal:%d",
+                printf("background process %d terminated with signal:%s",
                         pid, strsignal( WTERMSIG(status) ) );
             } else if(WIFEXITED(status)){
                 printf("background process %d exited with status:%d",
