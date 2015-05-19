@@ -111,7 +111,7 @@ bool showPrompt(char** inputBuff){
     }
 
     if(readCount == -1){
-        printf("%s",
+        fprintf(stderr,"%s",
               "ERROR: there was an error reading your input, please try again");
         return false;
     }
@@ -121,7 +121,7 @@ bool showPrompt(char** inputBuff){
 
 void changedir(char* path){
     if(!path){
-        fprintf(stderr,"%s","ERROR: must provide directory name/path"); //TODO change all errors to stderr
+        fprintf(stderr,"%s","ERROR: must provide directory name/path");
         return;
     }
 

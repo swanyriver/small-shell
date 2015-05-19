@@ -107,20 +107,51 @@ bool parseCommand(char* input,cmd* command){
     if(endOfArgs){
 
         if(command->bkgrnd && bkgroundINDX < numWords-1){
-            printf("%s","SYNTAX ERROR: no commands belong after & symbol");
+            fprintf(stderr,"%s",
+                    "SYNTAX ERROR: no commands belong after & symbol");
             return false;
         }
 
-        /*if (numWords-endOfArgs >
-            command->redirIn*2 + command->redirOut + command->bkgrnd ){
-            //i suspect there are too many
-        }*/
+        //syntax checking in and out redirect
+        if(command->redirIn){
 
-        //todo check for not enough or too many argumetns after > <
+            if(!command->args[inFileINDX+1] ||
+                    _isSyntax(command->args[inFileINDX+1])){
+                fprintf(stderr,"%s",
+                        "SYNTAX ERROR: please provide input file");
+                return false;
+            }
 
-        if(command->redirIn) command->inFILE = command->args[inFileINDX+1];
-        if(command->redirOut) command->outFILE = command->args[outFileINDX+1];
+            if(command->args[inFileINDX+2] &&
+                    ! _isSyntax(command->args[inFileINDX+2] ) ){
+                fprintf(stderr,"%s",
+                        "SYNTAX ERROR: please provide only one input file");
+                return false;
+            }
 
+            command->inFILE = command->args[inFileINDX+1];
+        }
+
+        if(command->redirOut){
+
+            if(!command->args[outFileINDX+1] ||
+                    _isSyntax(command->args[outFileINDX+1])){
+                fprintf(stderr,"%s",
+                        "SYNTAX ERROR: please provide output file");
+                return false;
+            }
+
+            if(command->args[outFileINDX+2] &&
+                    ! _isSyntax(command->args[outFileINDX+2] ) ){
+                fprintf(stderr,"%s",
+                        "SYNTAX ERROR: please provide only one output file");
+                return false;
+            }
+
+            command->outFILE = command->args[outFileINDX+1];
+        }
+
+        //preparing args array for execv call
         command->args[endOfArgs]=NULL;
     }
 
