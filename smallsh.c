@@ -1,19 +1,10 @@
-/*
- ============================================================================
- Name        : smallsh.c
- Author      : 
- Version     :
- Copyright   : Your copyright notice
- Description : Hello World in C, Ansi-style
- ============================================================================
- */
-
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <stdbool.h>
 #include <errno.h>
 #include <unistd.h>
+#include <signal.h>
 #include "parsecmd.h"
 #include "prepare.h"
 #include "command.h"
@@ -40,9 +31,15 @@ void runcommand(cmd *command, process *proc);
 
 int main(void) {
 
+    //set up signal handling
+    struct sigaction interuptAction;
+    interuptAction.sa_handler=SIG_IGN;
+    sigaction(SIGINT,&interuptAction,NULL);
+
 	char *inputBuffer = malloc(INBUFFSIZE * sizeof(char));
 	cmd inputCommand = cmd_new(ORIGINAL_MAX_ARGUMENTS);
 
+	//set up process exit status recording for status command
 	process lastP = {.pid=0,
 	        .Pname = malloc(sizeof(char)*NAME_SIZE),
 	        .exit_status =0};
@@ -121,7 +118,7 @@ void runcommand(cmd *command, process *proc){
             if(WIFEXITED(status)){
                 proc->exit_status = WEXITSTATUS(status);
             } else if (WIFSIGNALED(status)){
-
+                //todo check for signal
             }
         }
     }

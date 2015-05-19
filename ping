@@ -1,0 +1,27 @@
+PING www.google.com (74.125.239.50) 56(84) bytes of data.
+64 bytes from nuq04s19-in-f18.1e100.net (74.125.239.50): icmp_seq=1 ttl=55 time=12.4 ms
+64 bytes from nuq04s19-in-f18.1e100.net (74.125.239.50): icmp_seq=2 ttl=55 time=13.5 ms
+64 bytes from nuq04s19-in-f18.1e100.net (74.125.239.50): icmp_seq=3 ttl=55 time=10.8 ms
+64 bytes from nuq04s19-in-f18.1e100.net (74.125.239.50): icmp_seq=4 ttl=55 time=14.0 ms
+64 bytes from nuq04s19-in-f18.1e100.net (74.125.239.50): icmp_seq=5 ttl=55 time=29.3 ms
+64 bytes from nuq04s19-in-f18.1e100.net (74.125.239.50): icmp_seq=6 ttl=55 time=26.1 ms
+64 bytes from nuq04s19-in-f18.1e100.net (74.125.239.50): icmp_seq=7 ttl=55 time=10.8 ms
+64 bytes from nuq04s19-in-f18.1e100.net (74.125.239.50): icmp_seq=8 ttl=55 time=12.3 ms
+64 bytes from nuq04s19-in-f18.1e100.net (74.125.239.50): icmp_seq=9 ttl=55 time=16.9 ms
+64 bytes from nuq04s19-in-f18.1e100.net (74.125.239.50): icmp_seq=10 ttl=55 time=12.2 ms
+64 bytes from nuq04s19-in-f18.1e100.net (74.125.239.50): icmp_seq=11 ttl=55 time=19.3 ms
+64 bytes from nuq04s19-in-f18.1e100.net (74.125.239.50): icmp_seq=12 ttl=55 time=12.3 ms
+64 bytes from nuq04s19-in-f18.1e100.net (74.125.239.50): icmp_seq=13 ttl=55 time=20.9 ms
+64 bytes from nuq04s19-in-f18.1e100.net (74.125.239.50): icmp_seq=14 ttl=55 time=28.6 ms
+64 bytes from nuq04s19-in-f18.1e100.net (74.125.239.50): icmp_seq=15 ttl=55 time=12.2 ms
+64 bytes from nuq04s19-in-f18.1e100.net (74.125.239.50): icmp_seq=16 ttl=55 time=13.2 ms
+64 bytes from nuq04s19-in-f18.1e100.net (74.125.239.50): icmp_seq=17 ttl=55 time=27.5 ms
+64 bytes from nuq04s19-in-f18.1e100.net (74.125.239.50): icmp_seq=18 ttl=55 time=11.9 ms
+64 bytes from nuq04s19-in-f18.1e100.net (74.125.239.50): icmp_seq=19 ttl=55 time=27.8 ms
+64 bytes from nuq04s19-in-f18.1e100.net (74.125.239.50): icmp_seq=20 ttl=55 time=21.7 ms
+64 bytes from nuq04s19-in-f18.1e100.net (74.125.239.50): icmp_seq=21 ttl=55 time=12.3 ms
+64 bytes from nuq04s19-in-f18.1e100.net (74.125.239.50): icmp_seq=22 ttl=55 time=11.9 ms
+
+--- www.google.com ping statistics ---
+22 packets transmitted, 22 received, 0% packet loss, time 21031ms
+rtt min/avg/max/mdev = 10.856/17.221/29.309/6.511 ms
