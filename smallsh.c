@@ -13,6 +13,7 @@
 #include <string.h>
 #include <stdbool.h>
 #include <errno.h>
+#include <unistd.h>
 #include "parsecmd.h"
 #include "prepare.h"
 #include "command.h"
@@ -22,30 +23,44 @@
 size_t INBUFFSIZE = 512;
 const int ORIGINAL_MAX_ARGUMENTS = 512;
 const int NONSENSE = -5;
+const int NAME_SIZE = 512;
 
-
-//TODO can have global char** to local input buffer
-//      unassigned here, assigned in main
+typedef struct {
+    int pid;
+    char* Pname;
+    int exit_status;
+} process;
 
 
 //function prototypes
 bool showPrompt(char** inputBuff);
 void changedir(char* path);
-void status();
-void runcommand(cmd *command);
+void runcommand(cmd *command, process *proc);
+
 
 int main(void) {
 
 	char *inputBuffer = malloc(INBUFFSIZE * sizeof(char));
 	cmd inputCommand = cmd_new(ORIGINAL_MAX_ARGUMENTS);
 
+	process lastP = {.pid=0,
+	        .Pname = malloc(sizeof(char)*NAME_SIZE),
+	        .exit_status =0};
+	if (!lastP.Pname){
+	    const char* error = strerror(errno);
+        fprintf(stderr, "MEMORY ERROR:%s",error);
+        exit(1);
+	} //todo do a null check on all mallocs
+
+	//begin input output loop
 	do{
 		if(showPrompt(&inputBuffer)
 		        && parseCommand(inputBuffer,&inputCommand)
 		){
-		    runcommand(&inputCommand);
+		    runcommand(&inputCommand, &lastP);
 		} else if (inputCommand.builtin == STATUS) {
-			printf("status:%d",inputCommand.builtin);  //todo call status
+			printf("(%d) %s exited with status:%d\n",
+			        lastP.pid,lastP.Pname,lastP.exit_status);  //todo check for signal
 		} else if (inputCommand.builtin == CD) {
 		    changedir(inputCommand.args[1]);
 		}
@@ -58,7 +73,7 @@ int main(void) {
 	return 0;
 }
 
-void runcommand(cmd *command){
+void runcommand(cmd *command, process *proc){
 
     int spawnpid = NONSENSE;
 
@@ -79,16 +94,35 @@ void runcommand(cmd *command){
         //redirect in and out
         prepare_redirects(command);
 
-        execvp(command->cmd,command->args);
+        if(execvp(command->cmd,command->args) == -1){
+            const char* error = strerror(errno);
+            fprintf(stderr,"EXEC ERROR: %s", error);
+            exit(1);
+        }else {
+            //should never arrive here
+            fprintf(stderr,"EXEC ERROR: %s", "undefined exec behavior");
+            exit(1);
+        }
+
 
     } else {
+        //parent process
         int status;
-        waitpid(spawnpid,&status,0);
 
-        if(WIFEXITED(status)){
-            //puts(" sucsessfully");
-        } else {
-            //puts (" unsucsessful");
+        if(command->bkgrnd){
+            waitpid(spawnpid,&status,WNOHANG); //todo figure out how to clean zombies
+        }else {
+
+            strncpy(proc->Pname,command->cmd,NAME_SIZE);
+            proc->pid=spawnpid;
+
+            waitpid(spawnpid,&status,0);
+
+            if(WIFEXITED(status)){
+                proc->exit_status = WEXITSTATUS(status);
+            } else if (WIFSIGNALED(status)){
+
+            }
         }
     }
 
@@ -129,7 +163,7 @@ void changedir(char* path){
         const char* error = strerror(errno);
         fprintf(stderr, "ERROR:%s",error);
     } else {
-        char* cwd = get_current_dir_name();  //todo change to pre-alloced getcwd()
+        char* cwd = (char*) get_current_dir_name();  //todo change to pre-alloced getcwd()
         printf("CWD changed to:%s",cwd);
         free(cwd);
     }
