@@ -109,7 +109,7 @@ bool parseCommand(char* input,cmd* command){
 
         if(command->bkgrnd && bkgroundINDX < numWords-1){
             fprintf(stderr,"%s",
-                    "SYNTAX ERROR: no commands belong after & symbol");
+                    "SYNTAX ERROR: no commands belong after & symbol\n");
             return false;
         }
 
@@ -119,14 +119,14 @@ bool parseCommand(char* input,cmd* command){
             if(!command->args[inFileINDX+1] ||
                     _isSyntax(command->args[inFileINDX+1])){
                 fprintf(stderr,"%s",
-                        "SYNTAX ERROR: please provide input file");
+                        "SYNTAX ERROR: please provide input file\n");
                 return false;
             }
 
             if(command->args[inFileINDX+2] &&
                     ! _isSyntax(command->args[inFileINDX+2] ) ){
                 fprintf(stderr,"%s",
-                        "SYNTAX ERROR: please provide only one input file");
+                        "SYNTAX ERROR: please provide only one input file\n");
                 return false;
             }
 
@@ -138,14 +138,14 @@ bool parseCommand(char* input,cmd* command){
             if(!command->args[outFileINDX+1] ||
                     _isSyntax(command->args[outFileINDX+1])){
                 fprintf(stderr,"%s",
-                        "SYNTAX ERROR: please provide output file");
+                        "SYNTAX ERROR: please provide output file\n");
                 return false;
             }
 
             if(command->args[outFileINDX+2] &&
                     ! _isSyntax(command->args[outFileINDX+2] ) ){
                 fprintf(stderr,"%s",
-                        "SYNTAX ERROR: please provide only one output file");
+                        "SYNTAX ERROR: please provide only one output file\n");
                 return false;
             }
 

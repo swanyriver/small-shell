@@ -14,6 +14,6 @@
 
 extern void error_exit(char* header){
     const char* error = strerror(errno);
-    fprintf(stderr, "%s:%s",header,error);
+    fprintf(stderr, "%s:%s\n",header,error);
     exit(1);
 }

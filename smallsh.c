@@ -108,11 +108,11 @@ void runcommand(cmd *command, process *proc){
 
         if(execvp(command->cmd,command->args) == -1){
             const char* error = strerror(errno);
-            fprintf(stderr,"EXEC ERROR: %s", error);
+            fprintf(stderr,"EXEC ERROR: %s\n", error);
             exit(1);
         }else {
             //should never arrive here
-            fprintf(stderr,"EXEC ERROR: %s", "undefined exec behavior");
+            fprintf(stderr,"EXEC ERROR: %s\n", "undefined exec behavior");
             exit(1);
         }
 
@@ -162,8 +162,6 @@ void check_completedBG(){
                         pid, WEXITSTATUS(status));
             }
         }
-        //todo fix reporting of exit normal on kill
-        //background process 14152 terminated with status:1941129366
 
     }while(pid>0);
 }
@@ -171,7 +169,7 @@ void check_completedBG(){
 
 bool showPrompt(char** inputBuff){
 
-	printf("%s","\nsmallSH:");
+	printf("%s","smallSH:");
 	fflush(stdout);
 	size_t readCount = getline(inputBuff,&INBUFFSIZE,stdin);
 	--readCount;
@@ -185,7 +183,7 @@ bool showPrompt(char** inputBuff){
     }
 
     if(readCount == -1){
-        fprintf(stderr,"%s",
+        fprintf(stderr,"%s\n",
               "ERROR: there was an error reading your input, please try again");
         return false;
     }
@@ -207,10 +205,10 @@ void changedir(char* path, char* cwd){
 
     if(chdir(path) != 0){
         const char* error = strerror(errno);
-        fprintf(stderr, "ERROR:%s",error);
+        fprintf(stderr, "ERROR:%s\n",error);
     } else {
         getcwd(cwd, DIR_NAME_SIZE);
-        printf("CWD changed to:%s",cwd);
+        printf("CWD changed to:%s\n",cwd);
     }
 
 }

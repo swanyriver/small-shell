@@ -15,4 +15,5 @@ smallsh
 smallsh.c
 smallsh.o
 testfork.c
+testout
 testscript
