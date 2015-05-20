@@ -122,7 +122,7 @@ void runcommand(cmd *command, process *proc){
         int status;
 
         if(command->bkgrnd){
-            printf("%s started in background, PID:%d",command->cmd, spawnpid);
+            printf("%s started in background, PID:%d\n",command->cmd, spawnpid);
 
         } else {
 
@@ -155,10 +155,10 @@ void check_completedBG(){
 
         if (pid > 0) {
             if (WIFSIGNALED(status)){
-                printf("background process %d terminated with signal:%s",
+                printf("background process %d terminated with signal:%s\n",
                         pid, strsignal( WTERMSIG(status) ) );
             } else if(WIFEXITED(status)){
-                printf("background process %d exited with status:%d",
+                printf("background process %d exited with status:%d\n",
                         pid, WEXITSTATUS(status));
             }
         }
