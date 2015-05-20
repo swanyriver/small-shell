@@ -44,63 +44,68 @@ int main(void) {
     //allocate space for string variables and create struct for storing commands
     char *dir_name = malloc(DIR_NAME_SIZE * sizeof(char));
     if (!dir_name) error_exit("MEMORY ERROR");
-	char *inputBuffer = malloc(INBUFFSIZE * sizeof(char));
-	if (!inputBuffer) error_exit("MEMORY ERROR");
-	cmd inputCommand = cmd_new(ORIGINAL_MAX_ARGUMENTS);
+    char *inputBuffer = malloc(INBUFFSIZE * sizeof(char));
+    if (!inputBuffer) error_exit("MEMORY ERROR");
+    cmd inputCommand = cmd_new(ORIGINAL_MAX_ARGUMENTS);
 
-	//set up process exit status recording for status command
-	process lastP = {.pid=0,
-	        .Pname = malloc(sizeof(char)*NAME_SIZE),
-	        .exit_status =0};
-	if (!lastP.Pname){
-	    error_exit("MEMORY ERROR");
-	}
-
-
-	////////////////////////////////////////////////////////
-	//begin prompt => input => verify => fork/execute loop//
-	////////////////////////////////////////////////////////
-	do{
-		//reap completed background tasks
-	    check_completedBG();
-
-	    if(showPrompt(&inputBuffer)
-		        && parseCommand(inputBuffer,&inputCommand))
-	    {
-	    	//no errors on input, or parsing, and is not built in
-		    runcommand(&inputCommand, &lastP);
-
-	    } else if (inputCommand.builtin == STATUS) {
-	    	//retrieve last endend tasks exit satus or signal
-		    if(lastP.exitnorm){
-		        printf("(%d) %s exited with status:%d\n",
-		                lastP.pid,lastP.Pname,lastP.exit_status);
-		    } else {
-		        printf("(%d) %s ended with signal:%s\n",
-		               lastP.pid,lastP.Pname,strsignal(lastP.signal));
-		    }
-		} else if (inputCommand.builtin == CD) {
-			//changes working director to supplied directory in args[1] or home if null
-		    changedir(inputCommand.args[1], dir_name);
-		}
+    //set up process exit status recording for status command
+    process lastP = {.pid=0,
+            .Pname = malloc(sizeof(char)*NAME_SIZE),
+            .exit_status =0};
+    if (!lastP.Pname){
+        error_exit("MEMORY ERROR");
+    }
 
 
-	} while (inputCommand.builtin!=EXIT);
+    ////////////////////////////////////////////////////////
+    //begin prompt => input => verify => fork/execute loop//
+    ////////////////////////////////////////////////////////
+    do{
+        //reap completed background tasks
+        check_completedBG();
 
-	free(inputCommand.args);
-	free(inputBuffer);
-	free(dir_name);
-	free(lastP.Pname);
-	return 0;
+        if(showPrompt(&inputBuffer)
+                && parseCommand(inputBuffer,&inputCommand))
+        {
+            //no errors on input, or parsing, and is not built in
+            runcommand(&inputCommand, &lastP);
+
+        } else if (inputCommand.builtin == STATUS) {
+            //retrieve last endend tasks exit satus or signal
+            if(lastP.exitnorm){
+                printf("(%d) %s exited with status:%d\n",
+                        lastP.pid,lastP.Pname,lastP.exit_status);
+            } else {
+                printf("(%d) %s ended with signal:%s\n",
+                       lastP.pid,lastP.Pname,strsignal(lastP.signal));
+            }
+        } else if (inputCommand.builtin == CD) {
+            //changes working director to supplied directory in args[1] or home if null
+            changedir(inputCommand.args[1], dir_name);
+        }
+
+
+    } while (inputCommand.builtin!=EXIT);
+
+
+    //free up heap allocated strings
+    free(inputCommand.args);
+    free(inputBuffer);
+    free(dir_name);
+    free(lastP.Pname);
+
+
+    return 0;
 }
 
 void runcommand(cmd *command, process *proc){
 
     int spawnpid = NONSENSE;
 
+    //begin separate processes
     spawnpid = fork();
 
-    //unlikley to be reached
+    //Unlikely to be reached
     if(spawnpid == NONSENSE){
         fprintf(stderr,"%s","FORK ERROR: fork returned nonsense value");
         exit(1);
@@ -113,18 +118,18 @@ void runcommand(cmd *command, process *proc){
     if (spawnpid == 0){
         ///////////////////////////
         ///////child process//////
-    	//////////////////////////
+        //////////////////////////
 
-		//reset sigaction
-		struct sigaction action;
-		action.sa_handler=SIG_DFL;
-		sigaction(SIGINT,&action,NULL);
+        //reset sigaction
+        struct sigaction action;
+        action.sa_handler=SIG_DFL;
+        sigaction(SIGINT,&action,NULL);
 
         //redirect stdin and stdout
         prepare_redirects(command);
 
         if(execvp(command->cmd,command->args) == -1){
-        	//unable to execute, print errno string
+            //unable to execute, print errno string
             error_exit("EXEC ERROR");
         }else {  
             //should never arrive here  //child process should cease if sucsseful exec
@@ -134,7 +139,7 @@ void runcommand(cmd *command, process *proc){
 
 
     } else {
-    	///////////////////////
+        ///////////////////////
         ////parent process/////
         ///////////////////////
 
@@ -145,7 +150,7 @@ void runcommand(cmd *command, process *proc){
 
         } else {
 
-        	//save process name for status call
+            //save process name for status call
             strncpy(proc->Pname,command->cmd,NAME_SIZE);
             proc->pid=spawnpid;
 
@@ -178,14 +183,14 @@ void check_completedBG(){
 
     do{
 
-    	//proceed imediatly if no finished children
-    	//return 0 if there are unfinished children
+        //proceed imediatly if no finished children
+        //return 0 if there are unfinished children
         pid = waitpid(-1,&status,WNOHANG);
 
         //pid of finished child returned
         if (pid > 0) {
 
-        	//use macros to get exit status or signal
+            //use macros to get exit status or signal
             if (WIFSIGNALED(status)){
                 printf("background process %d ended signal:%s\n",
                         pid, strsignal( WTERMSIG(status) ) );
@@ -201,31 +206,31 @@ void check_completedBG(){
 
 bool showPrompt(char** inputBuff){
 
-	//show our prompt
-	printf("%s","smallSH:");
-	fflush(stdout);
+    //show our prompt
+    printf("%s","smallSH:");
+    fflush(stdout);
 
-	//get input using gnu extension getline, chosen for automatic realloc if input exceds INBUFFSIZE
-	size_t readCount = getline(inputBuff,&INBUFFSIZE,stdin);
+    //get input using gnu extension getline, chosen for automatic realloc if input exceds INBUFFSIZE
+    size_t readCount = getline(inputBuff,&INBUFFSIZE,stdin);
 
-	//return to interactive mode when reached end of another file
+    //return to interactive mode when reached end of another file
     if (feof(stdin)) {
       if (!freopen("/dev/tty", "r", stdin)) {
         error_exit("STREAM ERROR:");
       }
     } else if(readCount == 1){ 
-    	//user hit enter with no input
+        //user hit enter with no input
         return false;
     } else if(readCount == -1){ 
-    	//getline returned an error
+        //getline returned an error
         fprintf(stderr,"%s\n",
               "ERROR: there was an error reading your input, please try again");
         return false;
     }
 
     //remove trailing spaces
-	--readCount;
-	while((*inputBuff)[readCount-1]==' ') --readCount;
+    --readCount;
+    while((*inputBuff)[readCount-1]==' ') --readCount;
     (*inputBuff)[readCount]='\0';
 
     return true;
@@ -233,7 +238,7 @@ bool showPrompt(char** inputBuff){
 
 void changedir(char* path, char* cwd){
 
-	//if no directory provided retrieve home directory
+    //if no directory provided retrieve home directory
     if(!path){
         path = getenv("HOME");
     }
@@ -243,7 +248,7 @@ void changedir(char* path, char* cwd){
         const char* error = strerror(errno);
         fprintf(stderr, "ERROR:%s\n",error);
     } else {
-    	//place new directory name in cwd buffer and print
+        //place new directory name in cwd buffer and print
         getcwd(cwd, DIR_NAME_SIZE);
         printf("CWD changed to:%s\n",cwd);
     }
