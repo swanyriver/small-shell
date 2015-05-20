@@ -115,6 +115,11 @@ void runcommand(cmd *command, process *proc){
         ///////child process//////
     	//////////////////////////
 
+		//reset sigaction
+		struct sigaction action;
+		action.sa_handler=SIG_DFL;
+		sigaction(SIGINT,&action,NULL);
+
         //redirect stdin and stdout
         prepare_redirects(command);
 
