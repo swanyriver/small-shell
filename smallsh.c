@@ -70,7 +70,7 @@ int main(void) {
 		        printf("(%d) %s exited with status:%d\n",
 		                lastP.pid,lastP.Pname,lastP.exit_status);
 		    } else {
-		        printf("(%d) %s exited due to signal:%s\n",
+		        printf("(%d) %s ended with signal:%s\n",
 		               lastP.pid,lastP.Pname,strsignal(lastP.signal));
 		    }
 		} else if (inputCommand.builtin == CD) {
@@ -155,7 +155,7 @@ void check_completedBG(){
 
         if (pid > 0) {
             if (WIFSIGNALED(status)){
-                printf("background process %d terminated with signal:%s\n",
+                printf("background process %d ended signal:%s\n",
                         pid, strsignal( WTERMSIG(status) ) );
             } else if(WIFEXITED(status)){
                 printf("background process %d exited with status:%d\n",

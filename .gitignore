@@ -9,3 +9,5 @@ run
 *.o
 
 smallsh
+
+oldmake
