@@ -10,5 +10,4 @@
 
 extern void error_exit(char* header);
 
-
 #endif /* ERROR_H_ */
