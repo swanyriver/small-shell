@@ -218,7 +218,9 @@ bool showPrompt(char** inputBuff){
       if (!freopen("/dev/tty", "r", stdin)) {
         error_exit("STREAM ERROR:");
       }
-    } else if(readCount == 1){ 
+      putc('\n',stdout);
+      return false;
+    } else if(readCount == 1){
         //user hit enter with no input
         return false;
     } else if(readCount == -1){ 
