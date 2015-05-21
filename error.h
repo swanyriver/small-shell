@@ -8,6 +8,6 @@
 #ifndef ERROR_H_
 #define ERROR_H_
 
-extern void error_exit(char* header);
+void error_exit(char* header);
 
 #endif /* ERROR_H_ */

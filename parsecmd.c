@@ -9,6 +9,8 @@
 #include <string.h>
 #include <stdio.h>
 
+//compares strings character by character, converting each to lower case
+//used for checking for built in commands "cd", "status", "exit"
 bool strEQci(char* a, char*b){
     while(*a && *b){
         if ( ((*a++)|32) != ((*b++)|32))  return false;
@@ -17,6 +19,7 @@ bool strEQci(char* a, char*b){
     return true;
 }
 
+//check input against built in commands
 int _isBuiltIn(char* cmd){
 
     if (strEQci(cmd,"exit")) return EXIT;
@@ -25,17 +28,20 @@ int _isBuiltIn(char* cmd){
     return 0;
 }
 
-
+//initialize new command struct and allocate memory
 cmd cmd_new(int _maxAgs){
     cmd my_cmd;
 
     my_cmd.maxArgs = _maxAgs;
     my_cmd.args=malloc(_maxAgs * sizeof(char*));
+
+    //check for bad memory allocation
     if(!my_cmd.args) error_exit("MEMORY ERROR");
 
     return my_cmd;
 }
 
+//called after each input, to reset reused struct
 void _resetCMD(cmd* command){
     command->redirIn=false;
     command->redirOut=false;
@@ -43,6 +49,7 @@ void _resetCMD(cmd* command){
     command->builtin=NOT_BUILT_IN;
 }
 
+//checks for single character shell syntax < > &
 bool _isSyntax(char* arg){
     if(arg[1]!='\0') return false;
     if(arg[0]=='<') return true;
@@ -54,25 +61,29 @@ bool _isSyntax(char* arg){
 //return true if syntax is valid,
 bool parseCommand(char* input,cmd* command){
 
+    //checking for comment or blank line
     if(input[0] == '#' || input[0] == '\0' || input[0] == '\n'){
         return false;
     }
 
     _resetCMD(command);
 
-    command->cmd=input;
-    command->args[0]=input;
     int endOfArgs = 0;
     int inFileINDX = 0;
     int outFileINDX = 0;
     int bkgroundINDX = 0;
+    //will become pointer to first 'word' after strtok runs
+    command->cmd=input;
+    command->args[0]=input;
     /*use strtok to create an array of pointers the of each space separated word,
      * replacing ' ' with '/0'*/
     int numWords = 0;
     strtok( input , " " );
     do {
+        //capture pointer to begining of next arg
         command->args[++numWords] = strtok( NULL , " " );
 
+        //reallocate arg pointer array if necessary
         if(numWords>=command->maxArgs){
             command->maxArgs *=2;
             char** tmp = realloc(command->args,command->maxArgs * sizeof(char*));
@@ -82,7 +93,7 @@ bool parseCommand(char* input,cmd* command){
             }
         }
 
-
+        //set redir flags and record location of syntax marker
         if(command->args[numWords] && _isSyntax(command->args[numWords])){
             if (!endOfArgs)endOfArgs = numWords;
 
@@ -102,11 +113,14 @@ bool parseCommand(char* input,cmd* command){
 
     } while ( command->args[numWords] );
 
+    //check for built in commands
     command->builtin = _isBuiltIn(command->cmd);
     if(command->builtin) return false;
 
+    //syntax checking and parsing of redirect and background commands
     if(endOfArgs){
 
+        //ensure & is the last argument
         if(command->bkgrnd && bkgroundINDX < numWords-1){
             fprintf(stderr,"%s",
                     "SYNTAX ERROR: no commands belong after & symbol\n");

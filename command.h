@@ -12,6 +12,7 @@
 
 typedef enum { NOT_BUILT_IN, EXIT, CD, STATUS } built_in_type;
 
+//used for parsing input
 typedef struct {
     char* cmd;
     char** args;
